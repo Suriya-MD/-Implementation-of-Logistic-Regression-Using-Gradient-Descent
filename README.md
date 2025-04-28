@@ -8,17 +8,19 @@ To write a program to implement the the Logistic Regression Using Gradient Desce
 2. Anaconda – Python 3.7 Installation / Jupyter notebook
 
 ## Algorithm
-1.Import the required libraries.
+1.Import necessary libraries and load the dataset from a CSV file.
 
-2.Load the dataset.
+2.Drop irrelevant columns and convert categorical variables into numerical codes.
 
-3.Define X and Y array.
+3.Separate the dataset into feature matrix x and target vector y.
 
-4.Define a function for costFunction,cost and gradient.
+4.Initialize model parameters (theta) randomly and define helper functions like sigmoid, loss, and gradient_descent.
 
-5.Define a function to plot the decision boundary.
+5.Perform gradient descent to optimize theta by minimizing the logistic loss function.
 
-6.Define a function to predict the Regression value.
+6.Define a prediction function to classify based on the optimized model.
+
+7.Calculate the model’s accuracy on the training set and predict outcomes for new input samples.
 
 
 ## Program:
@@ -28,94 +30,102 @@ Program to implement the the Logistic Regression Using Gradient Descent.
 Developed by: SURIYA M
 RegisterNumber:  212223110055
 */
-```
-~~~
-import pandas as pd 
-import numpy as np 
-import matplotlib.pyplot as plt
-
-data=pd.read_csv("/content/Placement_Data (1).csv")
-data.head()
-~~~
-![428065887-c137c01b-df00-484c-97d5-236e947c0ccf](https://github.com/user-attachments/assets/a529740a-63e8-440e-9e99-2dbbf1274202)
-~~~
-data = data.drop(['sl_no', 'salary'], axis=1)
-data
-~~~
-![428066058-20fb24a0-1129-43ea-8248-16506b8dc298](https://github.com/user-attachments/assets/47d50c77-9ef9-4a1d-8845-04b6509e293d)
-~~~
-data["gender"]=data["gender"].astype('category') 
-data["ssc_b"]=data["ssc_b"].astype('category') 
-data["hsc_b"]=data["hsc_b"].astype('category') 
-data["degree_t"]=data["degree_t"].astype('category') 
-data["workex"]=data["workex"].astype('category') 
-data["specialisation"]=data["specialisation"].astype('category') 
-data["status"]=data["status"].astype('category') 
-data["hsc_s"]=data["hsc_s"].astype('category') 
-data.dtypes
-~~~
-![428066179-222ec0f5-fd00-4b15-8e5a-07869cadaeec](https://github.com/user-attachments/assets/f50a1202-38da-4861-bf27-69a12bb462bd)
-~~~
-data["gender"]=data["gender"].cat.codes 
-data["ssc_b"]=data["ssc_b"].cat.codes 
-data["hsc_b"]=data["hsc_b"].cat. codes
-data["degree_t"]=data["degree_t"].cat.codes 
-data["workex"]=data["workex"].cat.codes 
-data["specialisation"]=data["specialisation"].cat.codes 
-data["status"]=data["status"].cat.codes 
-data["hsc_s"]=data["hsc_s"].cat.codes 
-data
-~~~
-![428066474-c9f9beb8-0cc9-444e-8be2-e09fc7c3fd01](https://github.com/user-attachments/assets/650bf55c-7dcd-4e43-bdbb-b7df243f0efb)
-~~~
-x = data.iloc[:, :-1].values 
-y = data.iloc[:, -1].values 
+print("Name : SURIYA M")
+print("Register Number : 212223110055")
+import pandas as pd
+import numpy as np
+df=pd.read_csv("Placement_Data.csv")
+df
+df=df.drop("sl_no",axis=1)
+df=df.drop("salary",axis=1)
+df.head()
+df["gender"]=df["gender"].astype("category")
+df["ssc_b"]=df["ssc_b"].astype("category")
+df["hsc_b"]=df["hsc_b"].astype("category")
+df["degree_t"]=df["degree_t"].astype("category")
+df["workex"]=df["workex"].astype("category")
+df["specialisation"]=df["specialisation"].astype("category")
+df["status"]=df["status"].astype("category")
+df["hsc_s"]=df["hsc_s"].astype("category")
+df.dtypes
+df["gender"]=df["gender"].cat.codes
+df["ssc_b"]=df["ssc_b"].cat.codes
+df["hsc_b"]=df["hsc_b"].cat.codes
+df["degree_t"]=df["degree_t"].cat.codes
+df["workex"]=df["workex"].cat.codes
+df["specialisation"]=df["specialisation"].cat.codes
+df["status"]=df["status"].cat.codes
+df["hsc_s"]=df["hsc_s"].cat.codes
+df
+x=df.iloc[:,:-1].values
+y=df.iloc[:,-1].values
+## display dependent variables
 y
-~~~
-![428066638-c8c31bb0-d54c-472f-b6eb-f36bcbde5bef](https://github.com/user-attachments/assets/7d048205-f457-41e4-b12f-b8fb065040c9)
-~~~
-theta = np.random.randn(x.shape[1]) 
-Y = y
-def sigmoid(z): 
-    return 1 / (1 + np.exp(-z))
-def loss(theta, X, y): 
-    h = sigmoid(X.dot(theta))
-    return -np.sum(y * np.log(h) + (1 - y) * np.log(1 - h))
-def gradient_descent(theta, X, y, alpha, num_iterations): 
-    m = len(y)
-    for i in range(num_iterations): 
-        h = sigmoid(X.dot(theta)) 
-        gradient = X.T.dot(h - y) / m 
-        theta -= alpha * gradient 
+theta=np.random.randn(x.shape[1])
+Y=y
+def sigmoid(z):
+    return 1/(1+np.exp(-z))
+def loss(theta,x,Y):
+    h=sigmoid(x.dot(theta))
+    return -np.sum(Y*np.log(h)+(1-Y)*np.log(1-h))
+def gradient_descent(theta,x,Y,alpha,num_iterations):
+    m=len(y)
+    for i in range(num_iterations):
+        h=sigmoid(x.dot(theta))
+        gradient=x.T.dot(h-Y)/m
+        theta-=alpha*gradient
     return theta
-theta = gradient_descent(theta, x, y, alpha=0.01, num_iterations=1000)
-def predict(theta, X): 
-    h = sigmoid(X.dot(theta)) 
-    y_pred=np.where(h>=0.5,1,0) 
+theta=gradient_descent(theta,x,Y,alpha=0.01,num_iterations=1000)
+def predict(theta,x):
+    h=sigmoid(x.dot(theta))
+    y_pred=np.where(h>=0.5,1,0)
     return y_pred
-
-y_pred = predict(theta, x) 
-accuracy = np.mean(y_pred.flatten() == y)
-print("Accuracy: ", accuracy) 
+y_pred=predict(theta,x)
+accuracy=np.mean(y_pred.flatten()==Y)
+print("Accuracy:",accuracy)
 print(y_pred)
-~~~
-![428067211-2ba0f57b-f2a5-4f00-9b69-25cb967c7594](https://github.com/user-attachments/assets/f8752f06-1332-4b30-aa93-ccd4e9868aae)
-~~~
-xnew = np.array([[0,87,0,95,0,2,78,2,0,0,1,0]]) 
-y_prednew = predict(theta, xnew) 
+print(y)
+xnew=np.array([[0,87,0,95,0,2,78,2,0,0,1,0]])
+y_prednew=predict(theta,xnew)
 print(y_prednew)
-~~~
-
-![428067396-a4746cc7-6c49-45fc-909b-c7457caa2edd](https://github.com/user-attachments/assets/04d4f991-705b-49db-ac00-61c026ef77ba)
-~~~
-xnew = np.array([[0,0,0,0,0,2,8,2,0,0,1,0]]) 
-y_prednew = predict(theta, xnew) 
+xnew=np.array([[0,0,0,0,0,2,8,2,0,0,1,0]])
+y_prednew=predict(theta,xnew)
 print(y_prednew)
-~~~
-![428067556-93a005d6-07b5-4273-8a78-c2ad1238db1a](https://github.com/user-attachments/assets/22324dde-4eb0-4e0a-a21f-e32ceb1e0934)
+print("Name : SURIYA M")
+print("Register Number : 212223110055")
+```
 
+## Output:
 
+### Placement Dataset
+![image](https://github.com/user-attachments/assets/50bb2b38-38ab-443e-9795-52d31f2b3732)
+
+### Dataset after Feature Engineering
+![Screenshot 2025-04-04 101329](https://github.com/user-attachments/assets/7c4d3cd2-cea5-473f-933e-2573a6554fc4)
+
+### Datatypes of Feature column
+![Screenshot 2025-04-04 101343](https://github.com/user-attachments/assets/ff599f6b-10c9-4b51-9442-4bae961aa998)
+
+### Dataset after Encoding
+![Screenshot 2025-04-04 101402](https://github.com/user-attachments/assets/db1ecf83-417b-4bbf-a18a-36924ac361fd)
+
+### Y Values
+![Screenshot 2025-04-04 101417](https://github.com/user-attachments/assets/1a85c693-9785-4def-abc3-2b4602cf70b6)
+
+### Accuracy
+![Screenshot 2025-04-04 101441](https://github.com/user-attachments/assets/fd98934f-a112-4bbc-947e-8722434ae64b)
+
+### Y Predicted
+![Screenshot 2025-04-04 101518](https://github.com/user-attachments/assets/6fae9842-24b0-48db-b867-08282b36e1df)
+
+### Y Values
+![Screenshot 2025-04-04 101533](https://github.com/user-attachments/assets/599bad22-65ce-4c6d-a67e-9f1a77f3565a)
+
+### Y Predicted with different X Values
+![Screenshot 2025-04-04 101547](https://github.com/user-attachments/assets/9bb91fe0-8749-4025-b83e-962f6c8fc4f6)
+![image](https://github.com/user-attachments/assets/dd99d732-cd8e-4c7f-abfa-344f6f3652c4)
 
 ## Result:
+
 Thus the program to implement the the Logistic Regression Using Gradient Descent is written and verified using python programming.
 
